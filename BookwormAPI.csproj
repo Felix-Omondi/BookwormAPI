@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net11.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="11.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="11.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="11.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="11.0.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-rc.3" />
+        <PackageReference Include="Scalar.AspNetCore" Version="3.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="CredGuard">
+            <HintPath>.\dlls\CredGuard.dll</HintPath>
+        </Reference>
+        <!-- <Reference Include="NSCache">
+            <HintPath>.\dlls\CredGuard.dll</HintPath>
+        </Reference> -->
+    </ItemGroup>
+</Project>

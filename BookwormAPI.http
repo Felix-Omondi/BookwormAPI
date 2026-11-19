@@ -1,0 +1,11 @@
+@BookwormAPI_HostAddress = http://localhost:5252
+
+GET {{BookwormAPI_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{BookwormAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
