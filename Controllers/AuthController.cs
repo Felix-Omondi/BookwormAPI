@@ -70,7 +70,7 @@ namespace BookwormAPI.Controllers
 
             var tokenService = new TokenService(_configuration);
 
-            var (accessToken, accessTokenExpiration) = tokenService.GenerateToken(existingUser.FirstName, existingUser.Email, existingUser.Role.ToString());
+            var (accessToken, accessTokenExpiration) = tokenService.GenerateToken(existingUser.Id, existingUser.FirstName, existingUser.Email, existingUser.Role.ToString());
 
             var (refreshToken, refreshTokenExpiration) = await _refreshTokenService.GenerateRefreshToken(existingUser);
 
@@ -134,7 +134,7 @@ namespace BookwormAPI.Controllers
             storedToken.IsRevoked = true;
             var user = storedToken.User;
 
-            var (accessToken, accessTokenExpiration) = tokenService.GenerateToken(user.FirstName, user.Email, user.Role);
+            var (accessToken, accessTokenExpiration) = tokenService.GenerateToken(user.Id, user.FirstName, user.Email, user.Role);
             var (newRefreshToken, refreshTokenExpiration) = await _refreshTokenService.GenerateRefreshToken(user);
 
             Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions

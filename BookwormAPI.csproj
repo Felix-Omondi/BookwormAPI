@@ -21,10 +21,7 @@
     </ItemGroup>
     <ItemGroup>
         <Reference Include="CredGuard">
-            <HintPath>.\dlls\CredGuard.dll</HintPath>
+            <HintPath>.\build\dlls\CredGuard.dll</HintPath>
         </Reference>
-        <!-- <Reference Include="NSCache">
-            <HintPath>.\dlls\CredGuard.dll</HintPath>
-        </Reference> -->
     </ItemGroup>
 </Project>
