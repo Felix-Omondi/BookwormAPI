@@ -39,6 +39,17 @@ namespace BookwormAPI.Controllers
 
             var newUser = await _userService.CreateUserAsync(request);
 
+             var normalizedEmail = request.Email.Trim().ToLower();
+            var existingSubscriber = await _context.Subscribers
+   .FirstOrDefaultAsync(s => s.Email.ToLower() == normalizedEmail);
+
+            if (existingSubscriber is not null)
+            {
+                existingSubscriber.IsPlatformUser = true;
+                existingSubscriber.UserId = newUser.Id;
+                await _context.SaveChangesAsync();
+            }
+
             var response = new SignupResponse
             {
                 User = new UserDto

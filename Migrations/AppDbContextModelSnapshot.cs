@@ -16,7 +16,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261120053835_AddRefreshTokenIndexes";
+    public override string LastMigrationId => "20261120094641_AddSubscriberEnity";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -99,10 +99,46 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.HasIndex("Token")
                     .IsUnique();
 
-                b.HasIndex("UserId")
-                    .IsUnique();
+                b.HasIndex("UserId");
 
                 b.ToTable("RefreshTokens");
+            });
+
+        modelBuilder.Entity("BookwormAPI.Models.Subscriber", b =>
+            {
+                var id = b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(id);
+
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.Property<bool>("IsActive")
+                    .HasColumnType("boolean");
+
+                b.Property<bool>("IsPlatformUser")
+                    .HasColumnType("boolean");
+
+                b.Property<DateTime>("SubscribedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<DateTime?>("UnsubscribedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<int?>("UserId")
+                    .HasColumnType("integer");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Email")
+                    .IsUnique();
+
+                b.HasIndex("UserId");
+
+                b.ToTable("Subscribers");
             });
 
         modelBuilder.Entity("BookwormAPI.Models.User", b =>
@@ -166,7 +202,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
         modelBuilder.Entity("BookwormAPI.Models.RefreshToken", b =>
             {
                 b.HasOne("BookwormAPI.Models.User", "User")
-                    .WithMany()
+                    .WithMany("RefreshTokens")
                     .HasForeignKey("UserId")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
@@ -174,9 +210,20 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Navigation("User");
             });
 
+        modelBuilder.Entity("BookwormAPI.Models.Subscriber", b =>
+            {
+                b.HasOne("BookwormAPI.Models.User", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId");
+
+                b.Navigation("User");
+            });
+
         modelBuilder.Entity("BookwormAPI.Models.User", b =>
             {
                 b.Navigation("Books");
+
+                b.Navigation("RefreshTokens");
             });
 #pragma warning restore 612, 618
     }

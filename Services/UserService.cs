@@ -66,18 +66,57 @@ public class UserService : IUserService
         return users;
     }
 
-    public async Task<bool> SubscribeAsync(int id)
+    public async Task<bool> SubscribeAsync(int userId)
     {
-        var user = await GetUserByIdAsync(id);
-
+        var user = await GetUserByIdAsync(userId);
         if (user is null) return false;
 
-        if (!user.IsSubscribed)
+        return await SubscribeAsync(user.Email, user.Id);
+    }
+
+    public async Task<bool> SubscribeAsync(string email, int? knownUserId = null)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+
+        var existingSubscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Email.ToLower() == normalizedEmail);
+
+        if (existingSubscriber is not null)
         {
-            user.IsSubscribed = true;
+            if (existingSubscriber.IsActive)
+            {
+                return true;
+            }
+
+            // Re-activate if they previously unsubscribed
+            existingSubscriber.IsActive = true;
+            existingSubscriber.UnsubscribedAt = null;
+            existingSubscriber.SubscribedAt = DateTime.UtcNow;
+
+            if (knownUserId.HasValue)
+            {
+                existingSubscriber.IsPlatformUser = true;
+                existingSubscriber.UserId = knownUserId.Value;
+            }
+
             await _context.SaveChangesAsync();
+            return true;
+
+            // return Ok(new { message = "Welcome back! Your subscription has been reactivated." });
         }
 
+        var userId = knownUserId ?? (await GetUserByEmailAsync(normalizedEmail))?.Id;
+
+        var subscriber = new Subscriber
+        {
+            Email = normalizedEmail,
+            IsPlatformUser = userId.HasValue,
+            UserId = userId,
+            IsActive = true
+        };
+
+        _context.Subscribers.Add(subscriber);
+        await _context.SaveChangesAsync();
+        // return Ok(new { message = "Successfully subscribed to the newsletter." });
         return true;
     }
 

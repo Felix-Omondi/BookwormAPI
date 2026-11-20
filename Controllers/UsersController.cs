@@ -57,12 +57,26 @@ namespace BookwormAPI.Controllers
         [HttpPost("subscribe")]
         public async Task<IActionResult> Subscribe()
         {
-            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            // var userId = Convert.ToInt32(sub);
-            if(!int.TryParse(sub,out var userId)) return Unauthorized();
+            // var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var sub = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (!int.TryParse(sub, out var userId)) return Unauthorized();
 
             var subscribeResult = await _userService.SubscribeAsync(userId);
-            if (!subscribeResult) return NotFound();
+            if (!subscribeResult) return NotFound("User not found.");
+
+            return Ok(new { message = "Subscribed to newsletter successfully." });
+        }
+
+        // Public endpoint for guests entering an email on the landing page
+        [AllowAnonymous]
+        [HttpPost("subscribe/guest")]
+        public async Task<IActionResult> SubscribeGuest(SubscribeDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email)) return BadRequest("Email is required");
+
+            await _userService.SubscribeAsync(request.Email);
+
             return Ok(new { message = "Subscribed to newsletter successfully." });
         }
     }
