@@ -1,7 +1,11 @@
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookwormAPI.Models;
 
+[Index(nameof(Token), IsUnique = true)]
+[Index(nameof(UserId), IsUnique = true)]
+[Index(nameof(ExpiresAt), IsUnique = true)]
 public class RefreshToken
 {
     public int Id { get; set; }
