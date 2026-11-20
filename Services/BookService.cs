@@ -1,4 +1,3 @@
-using BookwormAPI.Controllers;
 using BookwormAPI.Data;
 using BookwormAPI.Dtos;
 using BookwormAPI.Models;

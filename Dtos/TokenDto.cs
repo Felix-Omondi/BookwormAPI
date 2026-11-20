@@ -1,5 +1,3 @@
-using System;
-
 namespace BookwormAPI.Dtos;
 
 public class TokenDto

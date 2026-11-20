@@ -1,8 +1,6 @@
-using System;
 using BookwormAPI.Data;
 using BookwormAPI.Models;
 using CredGuard.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookwormAPI.Services;

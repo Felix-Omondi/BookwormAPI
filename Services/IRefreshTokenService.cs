@@ -1,6 +1,4 @@
-using System;
 using BookwormAPI.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace BookwormAPI.Services;
 

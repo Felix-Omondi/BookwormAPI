@@ -1,5 +1,3 @@
-using System;
-
 namespace BookwormAPI.Dtos;
 
 public static class ReadStatus
