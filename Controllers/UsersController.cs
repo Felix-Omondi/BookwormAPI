@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using BookwormAPI.Dtos;
 using BookwormAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -53,9 +55,13 @@ namespace BookwormAPI.Controllers
         }
 
         [HttpPost("subscribe")]
-        public async Task<IActionResult> Subscribe([FromBody] SubscribeDto request)
+        public async Task<IActionResult> Subscribe()
         {
-            var subscribeResult = await _userService.SubscribeAsync(request.Email);
+            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            // var userId = Convert.ToInt32(sub);
+            if(!int.TryParse(sub,out var userId)) return Unauthorized();
+
+            var subscribeResult = await _userService.SubscribeAsync(userId);
             if (!subscribeResult) return NotFound();
             return Ok(new { message = "Subscribed to newsletter successfully." });
         }

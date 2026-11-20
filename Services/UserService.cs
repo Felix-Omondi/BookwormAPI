@@ -66,9 +66,9 @@ public class UserService : IUserService
         return users;
     }
 
-    public async Task<bool> SubscribeAsync(string email)
+    public async Task<bool> SubscribeAsync(int id)
     {
-        var user = await GetUserByEmailAsync(email);
+        var user = await GetUserByIdAsync(id);
 
         if (user is null) return false;
 
