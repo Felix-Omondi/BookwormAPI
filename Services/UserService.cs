@@ -66,6 +66,21 @@ public class UserService : IUserService
         return users;
     }
 
+    public async Task<bool> SubscribeAsync(string email)
+    {
+        var user = await GetUserByEmailAsync(email);
+
+        if (user is null) return false;
+
+        if (!user.IsSubscribed)
+        {
+            user.IsSubscribed = true;
+            await _context.SaveChangesAsync();
+        }
+
+        return true;
+    }
+
     public async Task<User?> UpdateUserAsync(int id, UpdateUserDto updateUserDto)
     {
         var user = await _context.Users.FindAsync(id);

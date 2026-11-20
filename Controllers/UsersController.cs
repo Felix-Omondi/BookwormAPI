@@ -17,15 +17,6 @@ namespace BookwormAPI.Controllers
             _userService = userService;
         }
 
-        // [HttpPost]
-        // public async Task<IActionResult> AddUser(SignupDto signupDto)
-        // {
-        //     if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        //     var createdUser = await _userService.CreateUserAsync(signupDto);
-        //     return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
-        // }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -56,11 +47,17 @@ namespace BookwormAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            // var user = await _userService.GetUserByIdAsync(id);
-            // if (user is null) return NotFound();
             var deleteResult = await _userService.DeleteUserAsync(id);
             if (!deleteResult) return NotFound();
             return NoContent();
+        }
+
+        [HttpPost("subscribe")]
+        public async Task<IActionResult> Subscribe([FromBody] SubscribeDto request)
+        {
+            var subscribeResult = await _userService.SubscribeAsync(request.Email);
+            if (!subscribeResult) return NotFound();
+            return Ok(new { message = "Subscribed to newsletter successfully." });
         }
     }
 }

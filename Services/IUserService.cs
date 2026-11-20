@@ -11,4 +11,5 @@ public interface IUserService
     Task<User?> GetUserByEmailAsync(string email);
     Task<bool> DeleteUserAsync(int id);
     Task<List<User>> GetUsersAsync();
+    Task<bool>SubscribeAsync(string email);
 }
