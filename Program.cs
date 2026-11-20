@@ -42,6 +42,7 @@ builder.Services.AddDbContextPool<AppDbContext>(options => options.UseNpgsql(bui
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddHostedService<RefreshTokenCleanupService>();
 
 var app = builder.Build();
 

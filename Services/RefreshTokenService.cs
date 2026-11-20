@@ -3,6 +3,7 @@ using BookwormAPI.Data;
 using BookwormAPI.Models;
 using CredGuard.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookwormAPI.Services;
 
@@ -20,6 +21,10 @@ public class RefreshTokenService : IRefreshTokenService
     public async Task<(string, DateTime)> GenerateRefreshToken(User user)
     {
         var tokenService = new TokenService(_configuration);
+
+        // Delete user's expired tokens whenever they log in or refresh their token
+        await _context.RefreshTokens.Where(rt => rt.UserId == user.Id && (rt.ExpiresAt < DateTime.UtcNow || rt.IsRevoked)).ExecuteDeleteAsync();
+
         var (refreshToken, refreshTokenExpiry) = tokenService.GenerateRefreshToken();
 
         var userRefreshToken = new RefreshToken
