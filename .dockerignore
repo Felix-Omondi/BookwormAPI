@@ -1,0 +1,8 @@
+# specifies files that should not get into the build context
+
+**/bin
+**/obj
+**/Properties
+**/Dockerfile*
+**/.dockerignore
+**/appsettings.Development.json
