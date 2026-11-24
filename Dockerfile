@@ -9,7 +9,7 @@ COPY --from=build /publish /app/
 
 EXPOSE 8080
 
-ENV ASPNETCORE_ENVIRONMENT=Development
+# ENV ASPNETCORE_ENVIRONMENT=Development # set up in compose.yaml
 
 # CMD [ "dotnet", "BookwormAPI.dll" ]
 

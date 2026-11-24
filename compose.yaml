@@ -1,0 +1,56 @@
+services:
+    web:
+        build: .
+        image: bookwormapi:1.0
+        container_name: bookworm-api
+        ports:
+            - "8080:8080"
+        environment:
+            ASPNETCORE_ENVIRONMENT: Development # Internal Docker network uses container port 5432
+            ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+        depends_on:
+            db:
+                condition: service_healthy
+
+    db:
+        image: postgres:18-bookworm
+        # container_name: bookworm-postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        ports:
+            # Maps Windows port 5433 -> Container port 5432
+            - "5433:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+
+volumes:
+    pgdata:
+
+# Once Docker builds your web image the first time, running plain docker compose up later will reuse that old image—even if you edit your C# code.
+# • When you only start/stop containers: Run docker compose up
+# • Whenever you change C# code, NuGet packages, or the Dockerfile: Run docker compose up --build so Docker compiles your latest changes into a fresh image.
+
+
+# for migrations, run them locally: dotnet ef database update --connection "Host=localhost;Port=5432;Database=your_db;Username=your_user;Password=your_password"
+
+# to check if tables were created, open the interactive psql prompt and type \dt directly inside it:
+# docker compose exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+
+
+# workflow by change
+    # 1. C# code, .csproj, or appsettings.json - RUN docker compose up --build -d web
+    # 2. EF Core Models (New Migration) - RUN dotnet ef migrations add <Name>, dotnet ef database update --connection "Host=localhost;Port=5433;Database=bookwormdb;Username=thanos;Password=12345", docker compose up --build -d web
+    # 3. Dockerfile - RUN docker compose up --build -d web
+    # 4. compose.yaml or .env - RUN docker compose up -d
+
+# Database credentials in .env: If you change POSTGRES_USER, POSTGRES_PASSWORD, or POSTGRES_DB in .env, PostgreSQL will ignore the change because the pgdata volume already exists. To apply new DB credentials, you must wipe the volume with docker compose down -v and then run docker compose up --build -d.
+# Viewing logs after running -d: Because -d runs containers in the background, run docker compose logs -f web anytime you want to inspect API logs or exceptions.
