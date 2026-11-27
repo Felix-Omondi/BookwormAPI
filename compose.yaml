@@ -40,7 +40,7 @@ volumes:
 # • Whenever you change C# code, NuGet packages, or the Dockerfile: Run docker compose up --build so Docker compiles your latest changes into a fresh image.
 
 
-# for migrations, run them locally: dotnet ef database update --connection "Host=localhost;Port=5432;Database=your_db;Username=your_user;Password=your_password"
+# for migrations, run them locally: dotnet ef database update --connection "Host=localhost;Port={windows_port};Database=your_db;Username=your_user;Password=your_password"
 
 # to check if tables were created, open the interactive psql prompt and type \dt directly inside it:
 # docker compose exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
